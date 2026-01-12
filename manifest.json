@@ -1,17 +1,35 @@
 {
   "manifest_version": 3,
-  "name": "ShortLink",
+  "name": "SpotLink - URL Shortener",
   "version": "1.0",
-  "action": {
-    "default_popup": "popup.html"
+  "description": "Create, manage, and track short links instantly using SpotLink.",
+
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+
   "permissions": [
     "storage",
     "tabs"
   ],
+
   "host_permissions": [
     "https://spotlink.cc/*"
   ],
+
   "browser_specific_settings": {
     "gecko": {
       "id": "shortlink@example.com",
