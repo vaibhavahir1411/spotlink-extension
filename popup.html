@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpotLink</title>
+  <link rel="stylesheet" href="popup.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+
+<body>
+
+  <!-- ========== LOGIN MODAL ========== -->
+  <div id="loginModal" class="modal hidden">
+    <div class="modal-box">
+      <h2 class="modal-title">Sign in</h2>
+
+      <div class="input-group">
+        <label>Email address</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" />
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="password" />
+      </div>
+
+      <p id="loginStatus" class="login-status"></p>
+
+      <div class="modal-actions">
+        <button id="confirmLoginBtn">Login</button>
+        <button id="cancelLoginBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ========== MAIN CARD CONTAINER ========== -->
+  <div class="card">
+
+    <!-- ========== HEADER & ACCOUNT MENU ========== -->
+    <div class="header">
+      <h1>SpotLink</h1>
+      <div class="account-area">
+        <a href="https://etus.link/" target="_blank" class="website-icon-btn" title="Visit Website">
+          <i class="fa-solid fa-globe"></i>
+        </a>
+        <button id="accountBtn" class="avatar-btn">
+          <span id="avatar"><i class="fa-solid fa-user"></i></span>
+        </button>
+
+        <!-- Account Menu -->
+        <div id="accountMenu" class="modal hidden">
+          <div class="modal-box">
+            <!-- Guest Menu -->
+            <div id="guestMenu">
+              <h3 style="font-size: 20px; margin-bottom: 20px; color: #111827; text-align: center; font-weight: 700;">Welcome to SpotLink</h3>
+              <p style="font-size: 14px; color: #6B7280; text-align: center; margin-bottom: 24px; line-height: 1.5;">Sign in to create and manage your short links</p>
+              <button id="loginBtn" style="background: var(--accent-primary); color: #111827; border-color: transparent; font-weight: 600;">Login</button>
+              <button id="registerBtn" style="background: #FFFFFF; color: #111827; border-color: var(--border-color); font-weight: 600; margin-top: 8px;">Register</button>
+            </div>
+
+            <!-- User Menu (Logged In) -->
+            <div id="userMenu" class="hidden">
+              <div class="profile-card">
+                <div class="avatar-lg" id="avatarLarge">A</div>
+                <div class="profile-info">
+                  <div id="menuName" class="name"></div>
+                  <div id="menuEmail" class="email"></div>
+                </div>
+              </div>
+              <a href="https://etus.link/" target="_blank" class="web-link-btn">
+                <i class="fa-solid fa-globe"></i>
+                Visit Website
+              </a>
+              <button id="logoutBtn" class="logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TAB NAVIGATION ========== -->
+    <div class="tabs">
+      <button class="tab active" id="shortenTabBtn">Shorten</button>
+      <button class="tab hidden" id="myUrlsTabBtn">My URLs</button>
+    </div>
+
+    <!-- ========== SHORTEN PANEL ========== -->
+    <div class="tab-content" id="shortenPanel">
+      <div class="input-group">
+        <label>Destination URL</label>
+        <input type="url" id="longUrl" placeholder="https://example.com" />
+      </div>
+
+      <div class="input-group">
+        <label>Title</label>
+        <input id="title" placeholder="Optional title" />
+      </div>
+
+      <div class="row">
+        <div class="input-group">
+          <label>Domain</label>
+          <select id="domain">
+            <option value="">Loading domains...</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <label>Custom Alias *</label>
+          <input id="customAlias" placeholder="my-custom-link" />
+        </div>
+      </div>
+
+      <div class="option-row">
+        <label class="checkbox">
+          <input type="checkbox" id="secure" />
+          <span class="checkmark"></span>
+          <span class="label-text">Secure (Password protected)</span>
+        </label>
+      </div>
+
+      <div class="input-group hidden" id="passwordGroup">
+        <label>Password</label>
+        <input type="password" id="password" placeholder="Enter password" />
+      </div>
+
+      <div class="input-group">
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <div style="flex: 1;">
+            <label>Collection</label>
+            <select id="collectionSelect">
+              <option value="">Select a collection (optional)</option>
+            </select>
+          </div>
+          <button id="newCollectionBtn" class="icon-btn" title="Create New Collection" style="margin-top: 24px;">
+            <i class="fa-solid fa-folder-plus"></i>
+          </button>
+        </div>
+      </div>
+
+      <button id="createBtn">Create Short URL</button>
+
+      <div class="result hidden">
+        <label>Your link is ready</label>
+        <div class="result-input-wrapper">
+          <input id="shortUrl" readonly />
+          <button id="copyBtn">Copy</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== MY URLS PANEL ========== -->
+    <div class="tab-content hidden" id="myUrlsPanel">
+      <!-- Search & Filter Bar -->
+      <div class="search-filter-wrapper">
+        <div class="search-wrapper">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="urlSearch" placeholder="Search your shortened URL..." />
+        </div>
+
+        <div class="collection-filter-wrapper">
+          <button id="collectionFilterBtn" class="filter-btn" title="Filter by collection">
+            <i class="fa-solid fa-folder"></i>
+          </button>
+          <div id="collectionDropdown" class="collection-dropdown hidden">
+            <div class="dropdown-header">
+              <h4>Collections</h4>
+            </div>
+            <div id="collectionsList" class="collections-list">
+              <p class="loading-text">Loading collections...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p id="urlsStatus" class="urls-status">Loading your links...</p>
+
+      <div id="urlsList" class="urls-list"></div>
+    </div>
+
+    <!-- ========== EDIT URL MODAL ========== -->
+    <div id="editModal" class="modal hidden">
+      <div class="modal-box">
+        <h3 style="font-size: 20px; margin-bottom: 20px; color: #111827;">Edit Short URL</h3>
+
+        <div class="input-group">
+          <label>Destination URL</label>
+          <input id="editDestination" placeholder="https://example.com" />
+        </div>
+
+        <div class="input-group">
+          <label>Title</label>
+          <input id="editTitle" placeholder="Optional title" />
+        </div>
+
+        <div class="row">
+          <div class="input-group">
+            <label>Domain</label>
+            <select id="editDomain" disabled>
+              <option value="">Select domain</option>
+            </select>
+          </div>
+
+          <div class="input-group">
+            <label>Custom Alias</label>
+            <input id="editAlias" disabled placeholder="my-custom-link" />
+          </div>
+        </div>
+
+        <div class="option-row">
+          <label class="checkbox">
+            <input type="checkbox" id="editSecure" />
+            <span class="checkmark"></span>
+            <span class="label-text">Secure (Password protected)</span>
+          </label>
+        </div>
+
+        <div class="input-group hidden" id="editPasswordGroup">
+          <label>Password</label>
+          <input type="password" id="editPassword" placeholder="Enter password" />
+        </div>
+
+        <div class="input-group">
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <div style="flex: 1;">
+              <label>Collection</label>
+              <select id="editCollectionSelect">
+                <option value="">Select a collection (optional)</option>
+              </select>
+            </div>
+            <button id="newEditCollectionBtn" class="icon-btn" title="Create New Collection" style="margin-top: 24px;">
+              <i class="fa-solid fa-folder-plus"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button id="saveEditBtn" style="background: var(--accent-primary); color: #111827; border-color: transparent;">Save Changes</button>
+          <button id="cancelEditBtn" style="background: #F9FAFB; color: #374151; border-color: var(--border-color);">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== GLOBAL STATUS MESSAGE ========== -->
+  <p id="status"></p>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
